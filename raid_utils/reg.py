@@ -29,6 +29,7 @@ class Reg:
         tokenlist = []
         ids = []
         for acc in accs:
+            acc = acc.strip(" ")
             try:
                 if not self.token:
                     num_and_passwd = acc.split(':')
@@ -53,8 +54,9 @@ class Reg:
                             'access_token': acc
                         }
                         url = 'https://api.vk.com/method/users.get'
-                        f = requests.get(url=url, params=params, headers=headers)
-                        ids.append(str(f.json()['response'][0]['id']))
+                        f = requests.get(url=url, params=params, headers=headers).json()
+                        f['response'][0]['is_closed']
+                        ids.append(str(f['response'][0]['id']))
                         tokenlist.append(acc)
                         print(f'Cтрока {x} в файле "{accfile}" валид')
                     except:
