@@ -132,6 +132,7 @@ class SpamLs(Thread):
                 break
             except:
                 print('Ошибка при отправке сообщения.')
+                break
             time.sleep(random.randint(1, 3))
 
 
@@ -163,6 +164,7 @@ class StickerSpamLs(Thread):
                 print('Ошибка при отправке каптчи')
             except:
                 print('Ошибка при отправке сообщения. С беседы кикнули')
+                break
             time.sleep(random.randint(1, 3))
 
 
@@ -249,6 +251,7 @@ class SpamChat(Thread):
                         print('Ошибка при отправке каптчи')
                     except:
                         print('Ошибка при отправке сообщения')
+                        break
                     time.sleep(random.randint(1, 3))
 
 
@@ -294,6 +297,7 @@ class StickerSpamChat(Thread):
                         print('Ошибка при отправке каптчи')
                     except:
                         print('Ошибка при отправке сообщения')
+                        break
                     time.sleep(random.randint(1, 3))
 
 
