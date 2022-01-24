@@ -442,14 +442,13 @@ class AlbumSpam(Thread):
         print(f"Фотка {raidphoto} успешно загружена. Начинается атака!")
         while True:
             try:
-                cod = 'var x = 0;while (x < 20){API.photos.save({"album_id":"'+str(self.album_id)+'","group_id":"'+str(self.group_id)+'","server":"'+str(response['server'])+'","photos_list":"'+str(response['photos_list']).replace('"','\\"')+'","hash":"'+str(response['hash'])+'"});x=x+1;}'
-                url = 'https://api.vk.com/method/execute'
-                params = {
-                    'access_token': self.token,
-                    'code': cod,
-                    'v': 5.92
-                }
-                requests.post(url=url, params=params, headers=headers)
+                vk.photos.save(
+                    album_id=self.album_id,
+                    group_id=self.group_id,
+                    server=response['server'],
+                    photos_list=response['photos_list'],
+                    hash=response['hash']
+                )
             except:
                 pass
 
