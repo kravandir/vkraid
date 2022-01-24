@@ -1,5 +1,6 @@
 import requests
 import random
+import os
 import vk_api
 import time
 from vk_api.longpoll import VkLongPoll, VkEventType
@@ -417,15 +418,15 @@ class AutoSay(Thread):
 
 
 class AlbumSpam(Thread):
-    def __init__(self, token, group_id, album_id, photo, captcha_key):
+    def __init__(self, token, group_id, album_id):
         Thread.__init__(self)
         self.token = token
         self.group_id = group_id
         self.album_id = album_id
-        self.photo = photo
-        self.captcha_key = captcha_key
 
     def run(self):
+        folder = os.listdir("raidfiles")
+        raidphoto = random.choice(folder)
         url = 'https://api.vk.com/method/photos.getUploadServer'
         params = {
             'access_token': self.token,
@@ -434,25 +435,21 @@ class AlbumSpam(Thread):
             'v': 5.92
         }
         a = requests.get(url=url, params=params, headers=headers).json()['response']['upload_url']
-        img = {'photo': ('ha.jpg', open(self.photo, 'rb'))}
+        img = {'photo': (raidphoto, open("raidfiles/"+raidphoto, 'rb'))}
         response = requests.post(a, files=img, headers=headers).json()
 
-        def captcha_handler(captcha):
-            key = ImageToTextTask.ImageToTextTask(
-                anticaptcha_key=self.captcha_key, save_format='const') \
-                .captcha_handler(captcha_link=captcha.get_url())
-            return captcha.try_again(key['solution']['text'])
-        vk = vk_api.VkApi(token=self.token, captcha_handler=captcha_handler).get_api()
+        vk = vk_api.VkApi(token=self.token).get_api()
+        print(f"Фотка {raidphoto} успешно загружена. Начинается атака!")
         while True:
             try:
-                vk.photos.save(
-                    album_id=self.album_id,
-                    group_id=self.group_id,
-                    server=response['server'],
-                    photos_list=response['photos_list'],
-                    hash=response['hash'])
-            except KeyError:
-                print('Неуспешно решена каптча')
+                cod = 'var x = 0;while (x < 20){API.photos.save({"album_id":"'+str(self.album_id)+'","group_id":"'+str(self.group_id)+'","server":"'+str(response['server'])+'","photos_list":"'+str(response['photos_list']).replace('"','\\"')+'","hash":"'+str(response['hash'])+'"});x=x+1;}'
+                url = 'https://api.vk.com/method/execute'
+                params = {
+                    'access_token': self.token,
+                    'code': cod,
+                    'v': 5.92
+                }
+                requests.post(url=url, params=params, headers=headers)
             except:
                 pass
 

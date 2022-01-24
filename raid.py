@@ -266,11 +266,10 @@ while True:
                     lnk = input()[21:].split("_")
                     group_id = lnk[0]
                     album_id = lnk[1]
-                    print('Вставьте полную ссылку на фото: ')
-                    photo = input()
+                    print('Будут рандомно выбираться фотки в raidfiles!')
                     print('Скоро начнётся засерание, проверяйте альбом вк')
                     for token in tokens:
-                        oldfunc.AlbumSpam(token, group_id, album_id, photo, captcha).start()
+                        oldfunc.AlbumSpam(token, group_id, album_id).start()
                 elif ch == 10:
                     gr_id = input("Введите домен группы:\n")
                     b = int(input("1.Вступить в группу\n2.Выйти из группы:\n"))
@@ -305,6 +304,7 @@ while True:
                 elif ch == 14:
                     stat = input("Статус: ")
                     oldfunc.Status(tokens, captcha, stat).start()
+
     except KeyboardInterrupt:
         print('Выход')
         break
