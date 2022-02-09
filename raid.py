@@ -1,5 +1,6 @@
 from raid_modules import msgraid, oldfunc, raidgr
 from raid_utils import jsonreader, options, reg
+from raid_modules import new_func
 print('\n\tRaidBotVk\t\n')
 
 
@@ -69,13 +70,16 @@ while True:
             elif sp == 2:
                 print(
                     '1.Обычный рейд\n'
-                    '2.Рейд стикерами')
-                stick = int(input())
+                    '2.Рейд стикерами\n'
+                    '3.Рейд скриншотами\n'
+                    '4.Рейд сменой темы чата\n'
+                )
+                raid_variant = int(input())
                 n = 1
                 edit_cf = int(input(
                     '1.Редактировать название конфы\n'
                     '2.Не редактировать название конфы\n'))
-                if stick == 1:
+                if raid_variant == 1:
                     edit = int(input(
                         '1.Редактировать сообщения\n'
                         '2.Не редактировать сообщения\n'))
@@ -88,10 +92,19 @@ while True:
                     for name in tokens:
                         msgraid.SpamChat(name, ms, captcha, n, call, title, edit, attach, edit_cf).start()
                         n += 1
-                elif stick == 2:
+                elif raid_variant == 2:
                     for name in tokens:
                         msgraid.StickerSpamChat(name, captcha, n, call, title, edit_cf).start()
                         n += 1
+                elif raid_variant == 3:
+                    for name in tokens:
+                        msgraid.ScreenshotSpamChat(name, captcha, n, call, title, edit_cf).start()
+                        n += 1
+                elif raid_variant == 4:
+                    for name in tokens:
+                        msgraid.ThemeSpamChat(name, n, call, title, edit_cf).start()
+                        n += 1
+
             elif sp == 3:
                 link = input('Ссылка на беседу: ')
                 msgraid.ConfJoin(tokens, link).start()
@@ -155,7 +168,10 @@ while True:
                 '2.Получить полную ссылку на беседу\n'
                 '3.Пригласить список групп в беседу\n'
                 '4.Загрузить аватарки\n'
-                '5.Отдельные ништяки')
+                '5.Отдельные ништяки\n'
+                '6.Настройка профиля\n'
+                '7.Добавиться в друзья\n'
+            )
             tools = int(input())
             if tools == 1:
                 print(options.get_id(tokens[0], input('Введите домен:\n')))
@@ -304,7 +320,22 @@ while True:
                 elif ch == 14:
                     stat = input("Статус: ")
                     oldfunc.Status(tokens, captcha, stat).start()
-
+            elif tools == 6:
+                profile_menu = int(input("1.Закрыть\n2.Открыть\n"))
+                x = 1
+                for token in tokens:
+                    if profile_menu == 1:
+                        print(f"{x} аккаунт закрыл профиль")
+                    else:
+                        print(f"{x} аккаунт открыл профиль")
+                    new_func.Profile(token, profile_menu).start()
+                    x += 1
+            elif tools == 7:
+                addfriend_menu = int(input("1.Добавиться\n2.Удалиться\n"))
+                lnk = input("Домен профиля, куда добавляться\n")
+                user_id = options.get_id(tokens[0], lnk)
+                for token in tokens:
+                    new_func.AddFriend(token, addfriend_menu, user_id, captcha).start()
     except KeyboardInterrupt:
         print('Выход')
         break

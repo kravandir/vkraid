@@ -363,3 +363,89 @@ class AddConf:
                         time.sleep(random.randint(1, 5))
                     else:
                         print('Все приглашены!')
+
+
+class ScreenshotSpamChat(Thread):
+    def __init__(self, token, captcha_key, n, call, title, edit_cf):
+        Thread.__init__(self)
+        self.token = token
+        self.captcha_key = captcha_key
+        self.n = n
+        self.call = call
+        self.title = title
+        self.edit_cf = edit_cf
+
+    def run(self):
+        AntiKick(self.token).start()
+
+        def captcha_handler(captcha):
+            key = ImageToTextTask.ImageToTextTask(
+                anticaptcha_key=self.captcha_key, save_format='const') \
+                .captcha_handler(captcha_link=captcha.get_url())
+            return captcha.try_again(key['solution']['text'])
+        vk_session = vk_api.VkApi(token=self.token, captcha_handler=captcha_handler)
+        vk = vk_session.get_api()
+        longpoll = VkLongPoll(vk_session)
+        for event in longpoll.listen():
+            if event.type == VkEventType.MESSAGE_NEW and event.text == self.call:
+                k = 1
+                while True:
+                    try:
+                        vk.messages.sendService(
+                            action_type="chat_screenshot",
+                            peer_id=event.peer_id
+                        )
+                        if self.edit_cf == 1:
+                            titled = vk.messages.getChat(chat_id=event.chat_id)['title']
+                            if titled != self.title:
+                                vk.messages.editChat(chat_id=event.chat_id, title=self.title)
+                                vk.messages.deleteChatPhoto(chat_id=event.chat_id)
+                                vk.messages.unpin(peer_id=event.peer_id)
+                        print('[CHAT] {0} ОТПРАВЛЕНО С {1} АККАУНТА!'.format(k, self.n))
+                        k += 1
+                    except KeyError:
+                        print('Ошибка при отправке каптчи')
+                    except:
+                        print('Ошибка при отправке сообщения')
+                        break
+
+
+class ThemeSpamChat(Thread):
+    def __init__(self, token, n, call, title, edit_cf):
+        Thread.__init__(self)
+        self.token = token
+        self.n = n
+        self.call = call
+        self.title = title
+        self.edit_cf = edit_cf
+
+    def run(self):
+        themes = ["emerald", "midnight", "new_year", "frost", "halloween_violet", "halloween_orange", "unicorn", "twilight", "sunset", "retrowave", "marine", "lagoon", "disco", "crimson", "candy"]
+        AntiKick(self.token).start()
+        vk_session = vk_api.VkApi(token=self.token)
+        vk = vk_session.get_api()
+        longpoll = VkLongPoll(vk_session)
+        for event in longpoll.listen():
+            if event.type == VkEventType.MESSAGE_NEW and event.text == self.call:
+                k = 1
+                while True:
+                    try:
+                        vk.messages.setConversationStyle(
+                            style=random.choice(themes),
+                            peer_id=event.peer_id
+                        )
+                        if self.edit_cf == 1:
+                            titled = vk.messages.getChat(chat_id=event.chat_id)['title']
+                            if titled != self.title:
+                                vk.messages.editChat(chat_id=event.chat_id, title=self.title)
+                                vk.messages.deleteChatPhoto(chat_id=event.chat_id)
+                                vk.messages.unpin(peer_id=event.peer_id)
+                        print('[CHAT] {0} ОТПРАВЛЕНО С {1} АККАУНТА!'.format(k, self.n))
+                        k += 1
+                    except KeyError:
+                        print('Ошибка при отправке каптчи')
+                    except Exception as e:
+                        print('Ошибка при отправке сообщения')
+                        print(e)
+                        break
+                    time.sleep(random.randint(3, 5))
