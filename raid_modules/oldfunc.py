@@ -2,7 +2,7 @@ import requests
 import random
 import os
 import vk_api
-import time
+from time import sleep
 from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from python3_anticaptcha import ImageToTextTask
@@ -103,7 +103,7 @@ class DeleteSubs(Thread):
             'screen_name': self.group_id,
             'v': 5.92
         }
-        group_id = str(requests.get(url=url, params=params, headers=headers).json()['response']['object_id'])
+        group_id = requests.get(url=url, params=params, headers=headers).json()['response']['object_id']
         url = 'https://api.vk.com/method/groups.getMembers'
         params = {
             'access_token': self.token,
@@ -186,8 +186,7 @@ class DeleteComment(Thread):
                 'count': 1,
                 'v': 5.92
             }
-            a = requests.get(url=url, params=params, headers=headers).json()[
-                'response']['items'][0]['id']
+            a = requests.get(url=url, params=params, headers=headers).json()['response']['items'][0]['id']
             print(f"Удалён {x+1} комментарий")
             url = 'https://api.vk.com/method/wall.deleteComment'
             params = {
@@ -252,8 +251,7 @@ class InviteRaidbots(Thread):
         vk11 = vk_api.VkApi(token=self.acc_token, captcha_handler=captcha_handler).get_api()
         kf_list = []
         for x in range(5):
-            kf_id = vk11.messages.createChat(
-                user_ids=self.friend_id, title=str(x + 1))
+            kf_id = vk11.messages.createChat(user_ids=self.friend_id, title=str(x + 1))
             kf_list.append(kf_id)
         for kf_id in kf_list:
             url = 'https://api.vk.com/method/bot.addBotToChat'
@@ -401,16 +399,18 @@ class AutoSay(Thread):
                                 peer_id=event.peer_id,
                                 message=random.choice(self.ms),
                                 attachment=self.media,
-                                random_id=random.randint(0, 999999))
+                                random_id=random.randint(0, 999999)
+                            )
                         if self.g == "2":
                             vk.messages.setActivity(peer_id=event.peer_id, type='typing')
-                            time.sleep(random.randint(3, 7))
+                            sleep(random.randint(3, 7))
                             vk.messages.send(
                                 peer_id=event.peer_id,
                                 message=random.choice(self.ms),
                                 attachment=self.media,
                                 random_id=random.randint(0, 999999),
-                                reply_to=event.message_id)
+                                reply_to=event.message_id
+                            )
                 except KeyError:
                     print('Неуспешно решена каптча')
                 except:
@@ -550,12 +550,14 @@ class Voting(Thread):
                     vk.polls.addVote(
                         owner_id=owner,
                         poll_id=id_poll,
-                        answer_ids=answer_id)
+                        answer_ids=answer_id
+                    )
                 if self.ch == "2":
                     vk.polls.deleteVote(
                         owner_id=owner,
                         poll_id=id_poll,
-                        answer_ids=answer_id)
+                        answer_ids=answer_id
+                    )
             except KeyError:
                 print('Неуспешно решена каптча')
             except:
@@ -581,8 +583,7 @@ class Likes(Thread):
         id_p = self.p[15 + len(self.tp):].split("_")[1]
         for token in self.tokens:
             try:
-                vk = vk_api.VkApi(token=token,
-                                  captcha_handler=captcha_handler).get_api()
+                vk = vk_api.VkApi(token=token, captcha_handler=captcha_handler).get_api()
                 if self.ch == "1":
                     vk.likes.add(type=self.tp, owner_id=owner, item_id=id_p)
                 if self.ch == "2":

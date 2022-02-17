@@ -1,8 +1,9 @@
+import time
 import vk_api
 import random
 import requests
+import traceback
 from raid_utils import jsonreader
-import time
 from threading import Thread
 from python3_anticaptcha import ImageToTextTask
 from vk_api.longpoll import VkLongPoll, VkEventType, VkChatEventType
@@ -27,7 +28,8 @@ class MsgRaid(Thread):
         vk.messages.send(
             chat_id=self.chat,
             random_id=random.randint(1, 999999),
-            message=self.call)
+            message=self.call
+        )
 
 
 class AddFriend(Thread):
@@ -84,13 +86,14 @@ class AntiKick(Thread):
                     if event.type_id == VkChatEventType.USER_KICKED:
                         vk.messages.addChatUser(
                             chat_id=event.chat_id,
-                            user_id=event.info['user_id'])
+                            user_id=event.info['user_id']
+                        )
             except:
                 pass
 
 
 class SpamLs(Thread):
-    def __init__(self, token, user_id, media, ms, captcha_key, n):
+    def __init__(self, token, user_id, media, ms, captcha_key, n, delmsg, theme):
         Thread.__init__(self)
         self.token = token
         self.user_id = user_id
@@ -98,6 +101,8 @@ class SpamLs(Thread):
         self.ms = ms
         self.captcha_key = captcha_key
         self.n = n
+        self.delmsg = delmsg
+        self.theme = theme
 
     def run(self):
         def captcha_handler(captcha):
@@ -113,18 +118,44 @@ class SpamLs(Thread):
                     a = open('args.txt', encoding='utf8')
                     msg = a.read().split('\n')
                     a.close()
-                    vk.messages.send(
-                        user_id=self.user_id,
-                        message=random.choice(msg),
-                        attachment=self.media,
-                        random_id=random.randint(1, 999999))
+                    if self.delmsg == 1:
+                        vk.messages.send(
+                            user_id=self.user_id,
+                            message=random.choice(msg),
+                            attachment=self.media,
+                            random_id=random.randint(1, 999999)
+                        )
+                    if self.delmsg == 2:
+                        vk.messages.send(
+                            user_id=self.user_id,
+                            message=random.choice(msg),
+                            attachment=self.media,
+                            random_id=random.randint(1, 999999),
+                            expire_ttl=60
+                        )
                 elif self.ms == 2:
                     msg = jsonreader.get_json_param('msg').split('\n')[0]
-                    vk.messages.send(
-                        user_id=self.user_id,
-                        message=msg,
-                        attachment=self.media,
-                        random_id=random.randint(1, 999999))
+                    if self.delmsg == 1:
+                        vk.messages.send(
+                            user_id=self.user_id,
+                            message=msg,
+                            attachment=self.media,
+                            random_id=random.randint(1, 999999)
+                        )
+                    if self.delmsg == 2:
+                        vk.messages.send(
+                            user_id=self.user_id,
+                            message=msg,
+                            attachment=self.media,
+                            random_id=random.randint(1, 999999),
+                            expire_ttl=60
+                        )
+                if self.theme == 2:
+                    themes = ["emerald", "midnight", "new_year", "frost", "halloween_violet", "halloween_orange", "unicorn", "twilight", "sunset", "retrowave", "marine", "lagoon", "disco", "crimson", "candy"]
+                    vk.messages.setConversationStyle(
+                        style=random.choice(themes),
+                        peer_id=self.user_id
+                    )
                 print(f'[LS RAID] {k} ОТПРАВЛЕНО С {self.n} АККАУНТА!')
                 k += 1
             except KeyError:
@@ -137,12 +168,14 @@ class SpamLs(Thread):
 
 
 class StickerSpamLs(Thread):
-    def __init__(self, token, user_id, captcha_key, n):
+    def __init__(self, token, user_id, captcha_key, n, delmsg, theme):
         Thread.__init__(self)
         self.token = token
         self.user_id = user_id
         self.captcha_key = captcha_key
         self.n = n
+        self.delmsg = delmsg
+        self.theme = theme
 
     def run(self):
         def captcha_handler(captcha):
@@ -154,10 +187,25 @@ class StickerSpamLs(Thread):
         vk = vk_api.VkApi(token=self.token, captcha_handler=captcha_handler).get_api()
         while True:
             try:
-                vk.messages.send(
-                    user_id=self.user_id,
-                    random_id=random.randint(1, 999999),
-                    sticker_id=random.randint(9008, 9047))
+                if self.delmsg == 1:
+                    vk.messages.send(
+                        user_id=self.user_id,
+                        random_id=random.randint(1, 999999),
+                        sticker_id=random.randint(9008, 9047)
+                    )
+                if self.delmsg == 2:
+                    vk.messages.send(
+                        user_id=self.user_id,
+                        random_id=random.randint(1, 999999),
+                        sticker_id=random.randint(9008, 9047),
+                        expire_ttl=60
+                    )
+                if self.theme == 2:
+                    themes = ["emerald", "midnight", "new_year", "frost", "halloween_violet", "halloween_orange", "unicorn", "twilight", "sunset", "retrowave", "marine", "lagoon", "disco", "crimson", "candy"]
+                    vk.messages.setConversationStyle(
+                        style=random.choice(themes),
+                        peer_id=self.user_id
+                    )
                 print(f'[LS RAID] {k} ОТПРАВЛЕНО С {self.n} АККАУНТА!')
                 k += 1
             except KeyError:
@@ -169,7 +217,7 @@ class StickerSpamLs(Thread):
 
 
 class SpamChat(Thread):
-    def __init__(self, token, ms, captcha_key, n, call, title, edit, attach, edit_cf):
+    def __init__(self, token, ms, captcha_key, n, call, title, edit, attach, edit_cf, delmsg, theme):
         Thread.__init__(self)
         self.token = token
         self.ms = ms
@@ -180,6 +228,8 @@ class SpamChat(Thread):
         self.edit = edit
         self.attach = attach
         self.edit_cf = edit_cf
+        self.delmsg = delmsg
+        self.theme = theme
 
     def run(self):
         AntiKick(self.token).start()
@@ -202,61 +252,109 @@ class SpamChat(Thread):
                                 a = open('args.txt', encoding='utf8')
                                 msg = a.read().split('\n')
                                 a.close()
-                                msg_id = vk.messages.send(
-                                    random_id=random.randint(1, 999999),
-                                    chat_id=event.chat_id,
-                                    message="Привет")
+                                if self.delmsg == 1:
+                                    msg_id = vk.messages.send(
+                                        random_id=random.randint(1, 999999),
+                                        chat_id=event.chat_id,
+                                        message="Привет"
+                                    )
+                                if self.delmsg == 2:
+                                    msg_id = vk.messages.send(
+                                        random_id=random.randint(1, 999999),
+                                        chat_id=event.chat_id,
+                                        message="Привет",
+                                        expire_ttl=60
+                                    )
                                 vk.messages.edit(
                                     peer_id=event.peer_id,
                                     message=random.choice(msg),
                                     message_id=msg_id,
-                                    attachment=self.attach)
+                                    attachment=self.attach
+                                )
                             elif self.ms == 2:
                                 msg = jsonreader.get_json_param('msg').split('\n')[0]
-                                msg_id = vk.messages.send(
-                                    random_id=random.randint(1, 999999),
-                                    chat_id=event.chat_id,
-                                    message="Привет")
+                                if self.delmsg == 1:
+                                    msg_id = vk.messages.send(
+                                        random_id=random.randint(1, 999999),
+                                        chat_id=event.chat_id,
+                                        message="Привет"
+                                    )
+                                if self.delmsg == 2:
+                                    msg_id = vk.messages.send(
+                                        random_id=random.randint(1, 999999),
+                                        chat_id=event.chat_id,
+                                        message="Привет",
+                                        expire_ttl=60
+                                    )
                                 vk.messages.edit(
                                     peer_id=event.peer_id,
                                     message=msg,
                                     message_id=msg_id,
-                                    attachment=self.attach)
+                                    attachment=self.attach
+                                )
                         if self.edit == 2:
                             if self.ms == 1:
                                 a = open('args.txt', encoding='utf8')
                                 msg = a.read().split('\n')
                                 a.close()
-                                vk.messages.send(
-                                    random_id=random.randint(1, 999999),
-                                    chat_id=event.chat_id,
-                                    message=random.choice(msg),
-                                    attachment=self.attach)
+                                if self.delmsg == 1:
+                                    vk.messages.send(
+                                        random_id=random.randint(1, 999999),
+                                        chat_id=event.chat_id,
+                                        message=random.choice(msg),
+                                        attachment=self.attach
+                                    )
+                                if self.delmsg == 2:
+                                    vk.messages.send(
+                                        random_id=random.randint(1, 999999),
+                                        chat_id=event.chat_id,
+                                        message=random.choice(msg),
+                                        attachment=self.attach,
+                                        expire_ttl=60
+                                    )
                             if self.ms == 2:
                                 msg = jsonreader.get_json_param('msg').split('\n')[0]
-                                vk.messages.send(
-                                    random_id=random.randint(1, 999999),
-                                    chat_id=event.chat_id,
-                                    message=msg,
-                                    attachment=self.attach)
+                                if self.delmsg == 1:
+                                    vk.messages.send(
+                                        random_id=random.randint(1, 999999),
+                                        chat_id=event.chat_id,
+                                        message=msg,
+                                        attachment=self.attach
+                                    )
+                                if self.delmsg == 2:
+                                    vk.messages.send(
+                                        random_id=random.randint(1, 999999),
+                                        chat_id=event.chat_id,
+                                        message=msg,
+                                        attachment=self.attach,
+                                        expire_ttl=60
+                                    )
                         if self.edit_cf == 1:
                             titled = vk.messages.getChat(chat_id=event.chat_id)['title']
                             if titled != self.title:
                                 vk.messages.editChat(chat_id=event.chat_id, title=self.title)
                                 vk.messages.deleteChatPhoto(chat_id=event.chat_id)
                                 vk.messages.unpin(peer_id=event.peer_id)
-                        print('[CHAT] {0} ОТПРАВЛЕНО С {1} АККАУНТА!'.format(k, self.n))
+                        if self.theme == 2:
+                            themes = ["emerald", "midnight", "new_year", "frost", "halloween_violet", "halloween_orange", "unicorn", "twilight", "sunset", "retrowave", "marine", "lagoon", "disco", "crimson", "candy"]
+                            vk.messages.setConversationStyle(
+                                style=random.choice(themes),
+                                peer_id=event.peer_id
+                            )
+
+                        print(f'[CHAT] {k} ОТПРАВЛЕНО С {self.n} АККАУНТА!')
                         k += 1
                     except KeyError:
                         print('Ошибка при отправке каптчи')
                     except:
+                        print(traceback.format_exc())
                         print('Ошибка при отправке сообщения')
                         break
                     time.sleep(random.randint(1, 3))
 
 
 class StickerSpamChat(Thread):
-    def __init__(self, token, captcha_key, n, call, title, edit_cf):
+    def __init__(self, token, captcha_key, n, call, title, edit_cf, delmsg):
         Thread.__init__(self)
         self.token = token
         self.captcha_key = captcha_key
@@ -264,6 +362,7 @@ class StickerSpamChat(Thread):
         self.call = call
         self.title = title
         self.edit_cf = edit_cf
+        self.delmsg = delmsg
 
     def run(self):
         AntiKick(self.token).start()
@@ -281,17 +380,32 @@ class StickerSpamChat(Thread):
                 k = 1
                 while True:
                     try:
-                        vk.messages.send(
-                            random_id=random.randint(1, 999999),
-                            chat_id=event.chat_id,
-                            sticker_id=random.randint(9008, 9047))
+                        if self.delmsg == 1:
+                            vk.messages.send(
+                                random_id=random.randint(1, 999999),
+                                chat_id=event.chat_id,
+                                sticker_id=random.randint(9008, 9047)
+                            )
+                        if self.delmsg == 2:
+                            vk.messages.send(
+                                random_id=random.randint(1, 999999),
+                                chat_id=event.chat_id,
+                                sticker_id=random.randint(9008, 9047),
+                                expire_ttl=60
+                            )
                         if self.edit_cf == 1:
                             titled = vk.messages.getChat(chat_id=event.chat_id)['title']
                             if titled != self.title:
                                 vk.messages.editChat(chat_id=event.chat_id, title=self.title)
                                 vk.messages.deleteChatPhoto(chat_id=event.chat_id)
                                 vk.messages.unpin(peer_id=event.peer_id)
-                        print('[CHAT] {0} ОТПРАВЛЕНО С {1} АККАУНТА!'.format(k, self.n))
+                        if self.theme == 2:
+                            themes = ["emerald", "midnight", "new_year", "frost", "halloween_violet", "halloween_orange", "unicorn", "twilight", "sunset", "retrowave", "marine", "lagoon", "disco", "crimson", "candy"]
+                            vk.messages.setConversationStyle(
+                                style=random.choice(themes),
+                                peer_id=event.peer_id
+                            )
+                        print(f'[CHAT] {k} ОТПРАВЛЕНО С {self.n} АККАУНТА!')
                         k += 1
                     except KeyError:
                         print('Ошибка при отправке каптчи')
@@ -401,7 +515,7 @@ class ScreenshotSpamChat(Thread):
                                 vk.messages.editChat(chat_id=event.chat_id, title=self.title)
                                 vk.messages.deleteChatPhoto(chat_id=event.chat_id)
                                 vk.messages.unpin(peer_id=event.peer_id)
-                        print('[CHAT] {0} ОТПРАВЛЕНО С {1} АККАУНТА!'.format(k, self.n))
+                        print(f'[CHAT] {k} ОТПРАВЛЕНО С {self.n} АККАУНТА!')
                         k += 1
                     except KeyError:
                         print('Ошибка при отправке каптчи')
@@ -440,7 +554,7 @@ class ThemeSpamChat(Thread):
                                 vk.messages.editChat(chat_id=event.chat_id, title=self.title)
                                 vk.messages.deleteChatPhoto(chat_id=event.chat_id)
                                 vk.messages.unpin(peer_id=event.peer_id)
-                        print('[CHAT] {0} ОТПРАВЛЕНО С {1} АККАУНТА!'.format(k, self.n))
+                        print(f'[CHAT] {k} ОТПРАВЛЕНО С {self.n} АККАУНТА!')
                         k += 1
                     except KeyError:
                         print('Ошибка при отправке каптчи')

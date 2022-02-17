@@ -36,13 +36,15 @@ class WallSpam(Thread):
                     vk.wall.post(
                         owner_id=self.wall,
                         message=random.choice(msg),
-                        attachments=self.med)
+                        attachments=self.med
+                    )
                 if self.ms == 2:
                     msg = jsonreader.get_json_param('msg').split('\n')[0]
                     vk.wall.post(
                         owner_id=self.wall,
                         message=msg,
-                        attachments=self.med)
+                        attachments=self.med
+                    )
                 print(f'[WALL RAID] {k} ОТПРАВЛЕНО С {self.n} АККАУНТА!')
                 k += 1
             except KeyError:
@@ -84,14 +86,16 @@ class SpamComment(Thread):
                         owner_id=self.wall,
                         post_id=self.post_id,
                         message=random.choice(msg),
-                        attachments=self.med)
+                        attachments=self.med
+                    )
                 if self.ms == 2:
                     msg = jsonreader.get_json_param('msg').split('\n')[0]
                     vk.wall.createComment(
                         owner_id=self.wall,
                         post_id=self.post_id,
                         message=msg,
-                        attachments=self.med)
+                        attachments=self.med
+                    )
                 print(f'[WALL RAID] {k} ОТПРАВЛЕНО С {self.n} АККАУНТА!')
                 k += 1
             except KeyError:
@@ -130,14 +134,16 @@ class SpamBoard(Thread):
                         group_id=brd[0],
                         topic_id=brd[1],
                         message=random.choice(msg),
-                        attachments=self.media)
+                        attachments=self.media
+                    )
                 if self.ms == 2:
                     msg = jsonreader.get_json_param('msg').split('\n')[0]
                     vk.board.createComment(
                         group_id=brd[0],
                         topic_id=brd[1],
                         message=msg,
-                        attachments=self.media)
+                        attachments=self.media
+                    )
                 print(f'[TOPIC RAID] {k} ОТПРАВЛЕНО С {self.n} АККАУНТА!')
                 k += 1
             except KeyError:

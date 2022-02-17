@@ -2,9 +2,6 @@ import requests
 import random
 import os
 import vk_api
-import time
-from vk_api.longpoll import VkLongPoll, VkEventType
-from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from python3_anticaptcha import ImageToTextTask
 from threading import Thread
 
@@ -16,17 +13,39 @@ class Profile(Thread):
         self.profile_menu = profile_menu
 
     def run(self):
-        value = 'false'
-        if self.profile_menu == 1:
-            value = 'true'
-        url = 'https://api.vk.com/method/account.setPrivacy'
-        params = {
-            'access_token': self.token,
-            'key': 'closed_profile',
-            'value': value,
-            'v': 5.92
-        }
-        requests.get(url=url, params=params)
+        if self.profile_menu == [1, 2]:
+            value = 'false'
+            if self.profile_menu == 1:
+                value = 'true'
+            url = 'https://api.vk.com/method/account.setPrivacy'
+            params = {
+                'access_token': self.token,
+                'key': 'closed_profile',
+                'value': value,
+                'v': 5.92
+            }
+            requests.get(url=url, params=params)
+        else:
+            def getlist(filename):
+                f = open(filename, encoding='utf-8', errors='ignore')
+                return random.choice(f.read().split('\n'))
+
+            name = getlist("name.txt")
+            surname = getlist("surname.txt")
+            dr = f"{random.randint(1, 28)}.{random.randint(1, 12)}.{random.randint(1950, 2003)}"
+            print(name, surname, dr)
+            params = {
+                "lang": "0",
+                "v": "5.127",
+                "access_token": self.token,
+                "sex": "2",
+                "bdate": dr,
+                "first_name": name,
+                "last_name": surname,
+                "vkui": "1"
+            }
+            url = "https://api.vk.com/method/account.saveProfileInfo"
+            requests.get(url=url, params=params)
 
 
 class AddFriend(Thread):
