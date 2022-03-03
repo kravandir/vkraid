@@ -7,16 +7,20 @@ from threading import Thread
 
 
 class Profile(Thread):
-    def __init__(self, token, profile_menu):
+    def __init__(self, token, profile_menu, x):
         Thread.__init__(self)
         self.token = token
         self.profile_menu = profile_menu
+        self.x = x
 
     def run(self):
-        if self.profile_menu == [1, 2]:
-            value = 'false'
+        if self.profile_menu in [1, 2]:
             if self.profile_menu == 1:
+                print(f"https://vk.com/id{self.x} аккаунт закрыл профиль")
                 value = 'true'
+            else:
+                value = 'false'
+                print(f"https://vk.com/id{self.x} аккаунт открыл профиль")
             url = 'https://api.vk.com/method/account.setPrivacy'
             params = {
                 'access_token': self.token,
@@ -33,7 +37,7 @@ class Profile(Thread):
             name = getlist("name.txt")
             surname = getlist("surname.txt")
             dr = f"{random.randint(1, 28)}.{random.randint(1, 12)}.{random.randint(1950, 2003)}"
-            print(name, surname, dr)
+            print(f"https://vk.com/{self.x}.{name} {surname} {dr}\n===========")
             params = {
                 "lang": "0",
                 "v": "5.127",
@@ -45,7 +49,8 @@ class Profile(Thread):
                 "vkui": "1"
             }
             url = "https://api.vk.com/method/account.saveProfileInfo"
-            requests.get(url=url, params=params)
+            r = requests.get(url=url, params=params)
+            print(r.json())
 
 
 class AddFriend(Thread):

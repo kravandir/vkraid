@@ -389,18 +389,18 @@ while True:
                         "3.Сменить имя, фамилию, дату рождения\n"
                     )
                 )
-                x = 1
+                x = 0
                 if profile_menu in [1, 2]:
                     for token in tokens:
                         if profile_menu == 1:
                             print(f"{x} аккаунт закрыл профиль")
                         else:
                             print(f"{x} аккаунт открыл профиль")
-                        new_func.Profile(token, profile_menu).start()
+                        new_func.Profile(token, profile_menu, ids[x]).start()
                         x += 1
                 else:
                     for token in tokens:
-                        new_func.Profile(token, profile_menu).start()                    
+                        new_func.Profile(token, profile_menu, ids[x]).start()                    
             elif tools == 7:
                 addfriend_menu = int(input("1.Добавиться\n2.Удалиться\n"))
                 lnk = input("Домен профиля, куда добавляться\n")
