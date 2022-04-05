@@ -179,6 +179,7 @@ while True:
                 tp = int(input(
                     '1.Рейд комментов\n'
                     '2.Рейд стрима\n'))
+                video = False
                 if tp == 1:
                     w = input(
                         'Введите ссылку на пост как в '
@@ -189,11 +190,13 @@ while True:
                         'Введите ссылку на пост как в '
                         'примере "video-118751940_8415": \n'
                     )[5:].split('_')
+                    video = True
                 wall = w[0]
                 post_id = w[1]
                 n = 1
                 for name in tokens:
-                    raidgr.SpamComment(name, wall, post_id, ms, med, captcha, n).start()
+                    raidgr.SpamComment(name, wall, post_id, ms, med, captcha, n, video).start()
+                    n += 1
                 else:
                     print('Спам запущен!')
             elif spam_group == 3:

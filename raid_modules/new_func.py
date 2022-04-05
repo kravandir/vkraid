@@ -32,7 +32,12 @@ class Profile(Thread):
         else:
             def getlist(filename):
                 f = open(filename, encoding='utf-8', errors='ignore')
-                return random.choice(f.read().split('\n'))
+                names = f.read().split('\n')
+                new_names = []
+                for name in names:
+                    if name != "":
+                        new_names.append(name)
+                return random.choice(new_names)
 
             name = getlist("name.txt")
             surname = getlist("surname.txt")

@@ -55,7 +55,7 @@ class WallSpam(Thread):
 
 
 class SpamComment(Thread):
-    def __init__(self, token, wall, post_id, ms, med, captcha_key, n):
+    def __init__(self, token, wall, post_id, ms, med, captcha_key, n, video):
         Thread.__init__(self)
         self.token = token
         self.wall = wall
@@ -64,6 +64,7 @@ class SpamComment(Thread):
         self.med = med
         self.captcha_key = captcha_key
         self.n = n
+        self.video = video
 
     def run(self):
         def captcha_handler(captcha):
@@ -82,20 +83,36 @@ class SpamComment(Thread):
                     a = open('args.txt', encoding='utf8')
                     msg = a.read().split('\n')
                     a.close()
-                    vk.wall.createComment(
-                        owner_id=self.wall,
-                        post_id=self.post_id,
-                        message=random.choice(msg),
-                        attachments=self.med
-                    )
+                    if self.video:
+                        vk.video.createComment(
+                            owner_id=self.wall,
+                            video_id=self.post_id,
+                            message=random.choice(msg),
+                            attachments=self.med
+                        )
+                    else:
+                        vk.wall.createComment(
+                            owner_id=self.wall,
+                            post_id=self.post_id,
+                            message=random.choice(msg),
+                            attachments=self.med
+                        )
                 if self.ms == 2:
                     msg = jsonreader.get_json_param('msg').split('\n')[0]
-                    vk.wall.createComment(
-                        owner_id=self.wall,
-                        post_id=self.post_id,
-                        message=msg,
-                        attachments=self.med
-                    )
+                    if self.video:
+                        vk.video.createComment(
+                            owner_id=self.wall,
+                            video_id=self.post_id,
+                            message=msg,
+                            attachments=self.med
+                        )
+                    else:
+                        vk.wall.createComment(
+                            owner_id=self.wall,
+                            post_id=self.post_id,
+                            message=msg,
+                            attachments=self.med
+                        )
                 print(f'[WALL RAID] {k} ОТПРАВЛЕНО С {self.n} АККАУНТА!')
                 k += 1
             except KeyError:
