@@ -29,8 +29,8 @@ def get_full_link(link, token):
         'url': link,
     }
     url = 'https://api.vk.com/method/utils.checkLink'
-    rq = requests.get(url=url, params=params, headers=headers).json()['response']['link']
-    print('Ссылка на беседу:\n'+rq)
+    rq = requests.get(url=url, params=params, headers=headers).json()
+    print('Ссылка на беседу:\n'+rq['response']['link'])
 
 
 def invite_bots(token, conf_id, bots):

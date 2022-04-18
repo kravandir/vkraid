@@ -39,7 +39,7 @@ class WallSpam(Thread):
                         attachments=self.med
                     )
                 if self.ms == 2:
-                    msg = jsonreader.get_json_param('msg').split('\n')[0]
+                    msg = jsonreader.get_json_param('msg')
                     vk.wall.post(
                         owner_id=self.wall,
                         message=msg,
@@ -72,9 +72,7 @@ class SpamComment(Thread):
                 anticaptcha_key=self.captcha_key, save_format='const') \
                 .captcha_handler(captcha_link=captcha.get_url())
             return captcha.try_again(key['solution']['text'])
-        vk_session = vk_api.VkApi(
-            token=self.token,
-            captcha_handler=captcha_handler)
+        vk_session = vk_api.VkApi(token=self.token, captcha_handler=captcha_handler)
         vk = vk_session.get_api()
         k = 1
         while True:
@@ -98,7 +96,7 @@ class SpamComment(Thread):
                             attachments=self.med
                         )
                 if self.ms == 2:
-                    msg = jsonreader.get_json_param('msg').split('\n')[0]
+                    msg = jsonreader.get_json_param('msg')
                     if self.video:
                         vk.video.createComment(
                             owner_id=self.wall,
@@ -154,7 +152,7 @@ class SpamBoard(Thread):
                         attachments=self.media
                     )
                 if self.ms == 2:
-                    msg = jsonreader.get_json_param('msg').split('\n')[0]
+                    msg = jsonreader.get_json_param('msg')
                     vk.board.createComment(
                         group_id=brd[0],
                         topic_id=brd[1],

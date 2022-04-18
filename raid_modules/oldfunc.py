@@ -22,8 +22,7 @@ class KickUsersByUser(Thread):
         self.chat = chat
 
     def run(self):
-        print('Главный акк - ваш аккаунт, с которого вам надо кикнуть всех участников в беседе\n'
-              'Указывайте его логин и пароль в первой строке')
+        print('Главный акк - ваш аккаунт, с которого вам надо кикнуть всех участников в беседе\nУказывайте его логин и пароль в первой строке')
         owner = self.token
 
         print('Запуск')
@@ -322,7 +321,6 @@ class DeleteSpam(Thread):
             except:
                 pass
         print('Всё удалено!')
-
 
 
 class DeleteMessages(Thread):

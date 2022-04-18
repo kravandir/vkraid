@@ -134,7 +134,7 @@ class SpamLs(Thread):
                             expire_ttl=60
                         )
                 elif self.ms == 2:
-                    msg = jsonreader.get_json_param('msg').split('\n')[0]
+                    msg = jsonreader.get_json_param('msg')
                     if self.delmsg == 1:
                         vk.messages.send(
                             user_id=self.user_id,
@@ -258,7 +258,7 @@ class SpamChat(Thread):
                                         chat_id=event.chat_id,
                                         message="Привет"
                                     )
-                                if self.delmsg == 2:
+                                else:
                                     msg_id = vk.messages.send(
                                         random_id=random.randint(1, 999999),
                                         chat_id=event.chat_id,
@@ -272,14 +272,14 @@ class SpamChat(Thread):
                                     attachment=self.attach
                                 )
                             elif self.ms == 2:
-                                msg = jsonreader.get_json_param('msg').split('\n')[0]
+                                msg = jsonreader.get_json_param('msg')
                                 if self.delmsg == 1:
                                     msg_id = vk.messages.send(
                                         random_id=random.randint(1, 999999),
                                         chat_id=event.chat_id,
                                         message="Привет"
                                     )
-                                if self.delmsg == 2:
+                                else:
                                     msg_id = vk.messages.send(
                                         random_id=random.randint(1, 999999),
                                         chat_id=event.chat_id,
@@ -313,7 +313,7 @@ class SpamChat(Thread):
                                         expire_ttl=60
                                     )
                             if self.ms == 2:
-                                msg = jsonreader.get_json_param('msg').split('\n')[0]
+                                msg = jsonreader.get_json_param('msg')
                                 if self.delmsg == 1:
                                     vk.messages.send(
                                         random_id=random.randint(1, 999999),
@@ -354,7 +354,7 @@ class SpamChat(Thread):
 
 
 class StickerSpamChat(Thread):
-    def __init__(self, token, captcha_key, n, call, title, edit_cf, delmsg):
+    def __init__(self, token, captcha_key, n, call, title, edit_cf, delmsg, theme):
         Thread.__init__(self)
         self.token = token
         self.captcha_key = captcha_key
@@ -363,6 +363,7 @@ class StickerSpamChat(Thread):
         self.title = title
         self.edit_cf = edit_cf
         self.delmsg = delmsg
+        self.theme = theme
 
     def run(self):
         AntiKick(self.token).start()

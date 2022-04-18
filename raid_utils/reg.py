@@ -55,7 +55,7 @@ class Reg:
                         }
                         url = 'https://api.vk.com/method/users.get'
                         f = requests.get(url=url, params=params, headers=headers).json()
-                        f['response'][0]['is_closed']
+                        print(f['response'][0]['is_closed'])
                         ids.append(str(f['response'][0]['id']))
                         tokenlist.append(acc)
                         print(f'Cтрока {x} в файле "{accfile}" валид')
@@ -94,10 +94,13 @@ class Reg:
             x += 1
         print('установка сообщения')
         text = open('message.txt', 'r', encoding='utf8')
-        text = text.read().split('\n')[0][:1882]
-        f1 = 'Сообщение для спама у вас теперь '
-        print(f1 + 'обновлено в файле "message.txt".')
-        print('Введите название беседы, какое будет при рейде: ')
+        file_text = text.read().split('\n')
+        text.close()
+        msg_text = ""
+        for t in file_text:
+            msg_text += t + "\\n"
+
+        print('Сообщение для спама у вас теперь обновлено в файле "message.txt".\nВведите название беседы, какое будет при рейде: ')
         title = input()
         print('Ключ от https://anti-captcha.com/: ')
         anti_captcha = input()
@@ -107,7 +110,7 @@ class Reg:
         k.write(
             '{\n\t"tokens":' + str(tokenlist).replace("'", '"') +
             ',\n\t"ids":' + str(ids).replace("'", '"') +
-            ',\n\t"msg":"' + text +
+            ',\n\t"msg":"' + msg_text +
             '",\n\t"title":"' + title +
             '",\n\t"captcha":"' + anti_captcha +
             '",\n\t"call":"' + call + '"\n}')

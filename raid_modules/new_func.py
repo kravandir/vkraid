@@ -1,6 +1,5 @@
 import requests
 import random
-import os
 import vk_api
 from python3_anticaptcha import ImageToTextTask
 from threading import Thread
@@ -34,9 +33,9 @@ class Profile(Thread):
                 f = open(filename, encoding='utf-8', errors='ignore')
                 names = f.read().split('\n')
                 new_names = []
-                for name in names:
-                    if name != "":
-                        new_names.append(name)
+                for nm in names:
+                    if nm != "":
+                        new_names.append(nm)
                 return random.choice(new_names)
 
             name = getlist("name.txt")

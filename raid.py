@@ -25,12 +25,12 @@ while True:
             'Выход из программы [ENTER]\n'
             '0.Редактировать конфиг\n'
             '1.Рейд в вк\n2.Рейд группы\n'
-            '3.Другие опции')
+            '3.Другие опции'
+        )
         raid = int(input())
         if raid == 0:
             regist = reg.Reg(True)
-            print('1.Проверка логинов и паролей в acc.txt\n'
-                  '2.Проверка данных из token.txt')
+            print('1.Проверка логинов и паролей в acc.txt\n2.Проверка данных из token.txt')
             ch = int(input())
             if ch == 1:
                 regist = reg.Reg(False)
@@ -52,32 +52,40 @@ while True:
                 n = 1
                 user_id = input('Домен того, кому надо засрать лс: ')
                 user_id = options.get_id(tokens[0], user_id)
-                delmsg = int(input(
-                        '1.Обычные сообщения\n'
-                        '2.Исчезающие сообщения\n'
-                    )
-                )
-                stick = int(input('1.Обычный рейд\n2.Рейд стикерами\n'))
-                theme = int(input(
-                        '1.Не менять тему чата\n'
-                        '2.Менять тему чата при атаке\n'
-                    )
-                )
+                print('1.Обычные сообщения\n2.Исчезающие сообщения\n')
+                delmsg = int(input())
+                print('1.Обычный рейд\n2.Рейд стикерами\n')
+                stick = int(input())
+                print('1.Не менять тему чата\n2.Менять тему чата при атаке\n')
+                theme = int(input())
                 if stick == 1:
                     ms = get_message()
-                    print(
-                        'Введите ссылку на медиафайл, например '
-                        '"photo459509306_457244578". Если вам не '
-                        'нужно прикреплять медиафайл, то '
-                        'пропустите, нажав enter: '
-                    )
+                    print('Введите ссылку на медиафайл, например "photo459509306_457244578". Если вам не нужно прикреплять медиафайл, то пропустите, нажав enter: ')
                     media = input()
-                    for name in tokens:
-                        msgraid.SpamLs(name, user_id, media, ms, captcha, n, delmsg, theme).start()
+                    for token in tokens:
+                        lsraid = msgraid.SpamLs(
+                            token=token,
+                            user_id=user_id,
+                            media=media,
+                            ms=ms,
+                            captcha_key=captcha,
+                            n=n,
+                            delmsg=delmsg,
+                            theme=theme
+                        )
+                        lsraid.start()
                         n += 1
                 elif stick == 2:
-                    for name in tokens:
-                        msgraid.StickerSpamLs(name, user_id, captcha, n, delmsg, theme).start()
+                    for token in tokens:
+                        sticker_ls = msgraid.StickerSpamLs(
+                            token=token,
+                            user_id=user_id,
+                            captcha_key=captcha,
+                            n=n,
+                            delmsg=delmsg,
+                            theme=theme
+                        )
+                        sticker_ls.start()
                         n += 1
             elif sp == 2:
                 print(
@@ -88,58 +96,74 @@ while True:
                 )
                 raid_variant = int(input())
                 n = 1
-                edit_cf = int(input(
-                        '1.Редактировать название конфы\n'
-                        '2.Не редактировать название конфы\n'
-                    )
-                )
+                print('1.Редактировать название конфы\n2.Не редактировать название конфы\n')
+                edit_cf = int(input())
                 if raid_variant == 1:
-                    theme = int(input(
-                            '1.Не менять тему чата\n'
-                            '2.Менять тему чата при атаке\n'
-                        )
-                    )
-                    edit = int(input(
-                            '1.Редактировать сообщения\n'
-                            '2.Не редактировать сообщения\n'
-                        )
-                    )
-                    attach = input(
-                        'Введите ссылку на медиафайл, например'
-                        ' "photo459509306_457244578". Если вам '
-                        'не нужно прикреплять медиафайл, то '
-                        'пропустите, нажав enter: '
-                    )
+                    print('1.Не менять тему чата\n2.Менять тему чата при атаке\n')
+                    theme = int(input())
+                    print('1.Редактировать сообщения\n2.Не редактировать сообщения\n')
+                    edit = int(input())
+                    print('Введите ссылку на медиафайл, например "photo459509306_457244578". Если вам не нужно прикреплять медиафайл, то пропустите, нажав enter: ')
+                    attach = input()
                     ms = get_message()
-                    delmsg = int(input(
-                            '1.Обычные сообщения\n'
-                            '2.Исчезающие сообщения\n'
+                    print('1.Обычные сообщения\n2.Исчезающие сообщения\n')
+                    delmsg = int(input())
+                    for token in tokens:
+                        chat_spam = msgraid.SpamChat(
+                            token=token,
+                            ms=ms,
+                            captcha_key=captcha,
+                            n=n,
+                            call=call,
+                            title=title,
+                            edit=edit,
+                            attach=attach,
+                            edit_cf=edit_cf,
+                            delmsg=delmsg,
+                            theme=theme
                         )
-                    )
-                    for name in tokens:
-                        msgraid.SpamChat(name, ms, captcha, n, call, title, edit, attach, edit_cf, delmsg, theme).start()
+                        chat_spam.start()
                         n += 1
                 elif raid_variant == 2:
-                    theme = int(input(
-                            '1.Не менять тему чата\n'
-                            '2.Менять тему чата при атаке\n'
+                    print('1.Не менять тему чата\n2.Менять тему чата при атаке\n')
+                    theme = int(input())
+                    print('1.Обычные сообщения\n2.Исчезающие сообщения\n')
+                    delmsg = int(input())
+                    for token in tokens:
+                        stickerspam_chat = msgraid.StickerSpamChat(
+                            token=token,
+                            captcha_key=captcha,
+                            n=n,
+                            call=call,
+                            title=title,
+                            edit_cf=edit_cf,
+                            delmsg=delmsg,
+                            theme=theme
                         )
-                    )
-                    delmsg = int(input(
-                            '1.Обычные сообщения\n'
-                            '2.Исчезающие сообщения\n'
-                        )
-                    )
-                    for name in tokens:
-                        msgraid.StickerSpamChat(name, captcha, n, call, title, edit_cf, delmsg, theme).start()
+                        stickerspam_chat.start()
                         n += 1
                 elif raid_variant == 3:
-                    for name in tokens:
-                        msgraid.ScreenshotSpamChat(name, captcha, n, call, title, edit_cf).start()
+                    for token in tokens:
+                        screen_spam = msgraid.ScreenshotSpamChat(
+                            token=token,
+                            captcha_key=captcha,
+                            n=n,
+                            call=call,
+                            title=title,
+                            edit_cf=edit_cf
+                        )
+                        screen_spam.start()
                         n += 1
                 elif raid_variant == 4:
-                    for name in tokens:
-                        msgraid.ThemeSpamChat(name, n, call, title, edit_cf).start()
+                    for token in tokens:
+                        theme_spam = msgraid.ThemeSpamChat(
+                            token=token,
+                            n=n,
+                            call=call,
+                            title=title,
+                            edit_cf=edit_cf
+                        )
+                        theme_spam.start()
                         n += 1
 
             elif sp == 3:
@@ -151,23 +175,13 @@ while True:
                 for name in tokens:
                     msgraid.AddFriend(name, captcha, ids).start()
         elif raid == 2:
-            spam_group = int(input(
-                    '1.Рейд стены\n'
-                    '2.Рейд комментариев/стрима\n'
-                    '3.Рейд обсуждения\n'
-                )
-            )
-            med = input(
-                'Введите ссылку на медиафайл, например '
-                '"photo459509306_457244578". Если вам не '
-                'нужно прикреплять медиафайл, '
-                'то пропустите, нажав enter: '
-            )
+            print('1.Рейд стены\n2.Рейд комментариев/стрима\n3.Рейд обсуждения\n')
+            spam_group = int(input())
+            print('Введите ссылку на медиафайл, например "photo459509306_457244578". Если вам не нужно прикреплять медиафайл, то пропустите, нажав enter: ')
+            med = input()
             ms = get_message()
             if spam_group == 1:
-                wall = input(
-                    'Домен страницы или группы, '
-                    'чтобы заспамить: \n')
+                wall = input('Домен страницы или группы, чтобы заспамить: \n')
                 wall = options.get_id(tokens[0], wall)
                 n = 1
                 for name in tokens:
@@ -176,37 +190,44 @@ while True:
                 else:
                     print('Спам запущен!')
             elif spam_group == 2:
-                tp = int(input(
-                    '1.Рейд комментов\n'
-                    '2.Рейд стрима\n'))
+                tp = int(input('1.Рейд комментов\n2.Рейд стрима\n'))
                 video = False
+                w = input('Введите ссылку на пост как в примере "wall-118751940_8415": \n')
                 if tp == 1:
-                    w = input(
-                        'Введите ссылку на пост как в '
-                        'примере "wall-118751940_8415": \n'
-                    )[4:].split('_')
+                    w = w[4:].split('_')
                 else:
-                    w = input(
-                        'Введите ссылку на пост как в '
-                        'примере "video-118751940_8415": \n'
-                    )[5:].split('_')
+                    w = w[5:].split('_')
                     video = True
                 wall = w[0]
                 post_id = w[1]
                 n = 1
-                for name in tokens:
-                    raidgr.SpamComment(name, wall, post_id, ms, med, captcha, n, video).start()
+                for token in tokens:
+                    comm_spam = raidgr.SpamComment(
+                        token=token,
+                        wall=wall,
+                        post_id=post_id,
+                        ms=ms,
+                        med=med,
+                        captcha_key=captcha,
+                        n=n,
+                        video=video
+                    )
+                    comm_spam.start()
                     n += 1
                 else:
                     print('Спам запущен!')
             elif spam_group == 3:
-                topic = input(
-                    'Введите ссылку на обсуждение, '
-                    'например "topic-118751940_8415":\n'
-                )
+                topic = input('Введите ссылку на обсуждение, например "topic-118751940_8415":\n')
                 n = 1
-                for name in tokens:
-                    raidgr.SpamBoard(name, med, topic, ms, captcha, n).start()
+                for token in tokens:
+                    spamboard = raidgr.SpamBoard(
+                        token=token,
+                        media=med,
+                        brd=topic,
+                        ms=ms,
+                        captcha_key=captcha,
+                        n=n)
+                    spamboard.start()
                     n += 1
         elif raid == 3:
             print(
@@ -225,16 +246,10 @@ while True:
                 link = input("Введите ссылку на беседу:\n")
                 options.get_full_link(link, tokens[0])
             elif tools == 3:
-                print(
-                    'Токен для инвайта по ссылке:\n'
-                    'https://oauth.vk.com/authorize?client_id=6441755&redirect_uri=https://api.vk.com/blank.html&display=page&response_type=token&revoke=1\nИ подтвердить. А потом вставить новый токен, который сгенерировался в браузере'
-                )
-                token = input(
-                    'Вставь токен из новой ссылки, он начинается от '
-                    '"access_token=" и заканчивается до "&expires_in": '
-                )
-                d = 'Введите айди беседы для приглашения ботов: '
-                conf_id = str(2000000000 + int(input(d)))
+                print('Токен для инвайта по ссылке:\nhttps://oauth.vk.com/authorize?client_id=6441755&redirect_uri=https://api.vk.com/blank.html&display=page&response_type=token&revoke=1\nИ подтвердить. А потом вставить новый токен, который сгенерировался в браузере')
+                token = input('Вставь токен из новой ссылки, он начинается от "access_token=" и заканчивается до "&expires_in": ')
+                print('Введите айди беседы для приглашения ботов: ')
+                conf_id = str(2000000000 + int(input()))
                 bots = input('Айди групп через запятую:\n').split(',')
                 print('Приглашение ботов в беседу')
                 options.invite_bots(token, conf_id, bots)
@@ -262,24 +277,22 @@ while True:
                     )
                 )
                 if ch == 1:
-                    b = int(input(
-                            '1.Удалить пользователем конфу\n'
-                            '2.Удалить конфу группой\n'
-                        )
-                    )
+                    b = int(input('1.Удалить пользователем конфу\n2.Удалить конфу группой\n'))
                     if b == 1:
                         chat = input('Введите айди беседы: ')
                         oldfunc.KickUsersByUser(tokens[0], ids, chat).start()
                     elif b == 2:
                         id_group = int(input('Введите айди группы:\n'))
-                        print(
-                            'Перейдите по этой ссылке:\n'
-                            f'https://oauth.vk.com/authorize?client_id=3116505&scope=messages,manage,photos,docs,wall,stories&redirect_uri=https://oauth.vk.com/blank.html&display=page&response_type=token&group_ids={id_group}\n'
-                            f'И нажмите "разрешить" и вставьте текст после "&access_token_{id_group}=":'
-                        )
+                        print(f'Перейдите по этой ссылке:\nhttps://oauth.vk.com/authorize?client_id=3116505&scope=messages,manage,photos,docs,wall,stories&redirect_uri=https://oauth.vk.com/blank.html&display=page&response_type=token&group_ids={id_group}\nИ нажмите "разрешить" и вставьте текст после "&access_token_{id_group}=":')
                         token_group = input()
                         cmd = input('Отправьте команду для активации: ')
-                        oldfunc.KickUsersByGroup(id_group, token_group, ids, cmd).start()
+                        kickgr_users = oldfunc.KickUsersByGroup(
+                            group_id=id_group,
+                            token_group=token_group,
+                            ids=ids,
+                            cmd=cmd
+                        )
+                        kickgr_users.start()
                 elif ch == 2:
                     group_id = input('Домен группы введите: ')
                     oldfunc.DeleteSubs(tokens[0], group_id).start()
@@ -302,17 +315,13 @@ while True:
                     oldfunc.DeleteSpam(tokens[0], kf_id, g).start()
                 elif ch == 7:
                     print('Действие выполняется с главного (первого акка)')
-                    print(
-                        'Чтобы поставить на автоудаление, введите домен страницы вк пользователей.'
-                        'Если много пользователей, то введите их домены через запятую:')
+                    print('Чтобы поставить на автоудаление, введите домен страницы вк пользователей. Если много пользователей, то введите их домены через запятую:')
                     id_list = input().split(",")
                     oldfunc.DeleteMessages(tokens[0], id_list).start()
                 elif ch == 8:
                     print('Действие выполняется с главного акка (первая строка в acc или token txt)')
                     g = input("1.Просто ответ\n2.Ответ с пересыланием\n")
-                    print(
-                        'Чтобы поставить автоответчик на троля тупого,'
-                        'введите его или их домены через запятую:')
+                    print('Чтобы поставить автоответчик на троля тупого, введите его или их домены через запятую:')
                     id_list = input().split(",")
                     msg_tp = get_message()
                     ms = ''
@@ -322,9 +331,7 @@ while True:
                         a.close()
                     elif msg_tp == 2:
                         ms = msg.split('\n')
-                    media = input(
-                        'Введите ссылку на медиафайл, например "photo459509306_457244578". ' +
-                        'Если вам не нужно прикреплять медиафайл, то пропустите, нажав enter: ')
+                    media = input('Введите ссылку на медиафайл, например "photo459509306_457244578". Если вам не нужно прикреплять медиафайл, то пропустите, нажав enter: ')
                     oldfunc.AutoSay(tokens[0], captcha, id_list, ms, media, g).start()
                     print("Срач работает!")
                 elif ch == 9:
@@ -361,7 +368,8 @@ while True:
                         'story — история\n'
                         'photo — фотография\n'
                         'video — видеозапись\n'
-                        'market — товар')
+                        'market — товар'
+                    )
                     tp = input()
                     print('Введите ссылку на то, что надо лайкнуть. Например, "https://vk.com/photo599246827_457239326":')
                     p = input()
@@ -371,27 +379,25 @@ while True:
                     stat = input("Статус: ")
                     oldfunc.Status(tokens, captcha, stat).start()
                 elif ch == 15:
-                    print(
-                        'Введите токен своей страницы\n'
-                        'https://oauth.vk.com/authorize?client_id=2685278&scope=notify%2Cphotos%2Cfriends%2Caudio%2Cvideo%2Cnotes%2Cpages%2Cdocs%2Cstatus%2Cquestions%2Coffers%2Cwall%2Cgroups%2Cmessages%2Cnotifications%2Cstats%2Cads%2Coffline&redirect_uri=https://api.vk.com/blank.html&display=page&response_type=token&revoke=1'
-                    )
+                    print('Введите токен своей страницы\nhttps://oauth.vk.com/authorize?client_id=2685278&scope=notify%2Cphotos%2Cfriends%2Caudio%2Cvideo%2Cnotes%2Cpages%2Cdocs%2Cstatus%2Cquestions%2Coffers%2Cwall%2Cgroups%2Cmessages%2Cnotifications%2Cstats%2Cads%2Coffline&redirect_uri=https://api.vk.com/blank.html&display=page&response_type=token&revoke=1')
                     acc_token = input()
-                    print(
-                        'Введите токен для приглашения ботов\n'
-                        'https://oauth.vk.com/authorize?client_id=6441755&redirect_uri=https://api.vk.com/blank.html&display=page&response_type=token&revoke=1'
-                    )
+                    print('Введите токен для приглашения ботов\nhttps://oauth.vk.com/authorize?client_id=6441755&redirect_uri=https://api.vk.com/blank.html&display=page&response_type=token&revoke=1')
                     invite_token = input()
                     friend_id = input("Введите id друга\n")
                     group = input("Введите id группы\n")
                     your_id = input("Введите свой id\n")
-                    oldfunc.InviteRaidbots(acc_token, invite_token, group, friend_id, your_id, captcha).start()
-            elif tools == 6:
-                profile_menu = int(input(
-                        "1.Закрыть профиль\n"
-                        "2.Открыть профиль\n"
-                        "3.Сменить имя, фамилию, дату рождения\n"
+                    invbots = oldfunc.InviteRaidbots(
+                        acc_token=acc_token,
+                        invite_token=invite_token,
+                        group=group,
+                        friend_id=friend_id,
+                        your_id=your_id,
+                        captcha_key=captcha
                     )
-                )
+                    invbots.start()
+            elif tools == 6:
+                print("1.Закрыть профиль\n2.Открыть профиль\n3.Сменить имя, фамилию, дату рождения\n")
+                profile_menu = int(input())
                 x = 0
                 if profile_menu in [1, 2]:
                     for token in tokens:
