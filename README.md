@@ -1,4 +1,4 @@
-# RAID BOTNET FOR VK
+# RAID BOTNET FOR VK (SPAM BOT)
 
 ### УСТАНОВКА
 
